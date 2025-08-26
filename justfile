@@ -53,7 +53,6 @@ br:
 cr:
 	rm -rf build
 	mkdir -p build
-	cd build
 	cmake -D CMAKE_CXX_COMPILER={{gpp_which}} -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
