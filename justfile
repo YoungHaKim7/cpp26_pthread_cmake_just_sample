@@ -63,7 +63,7 @@ cr:
 zr:
 	rm -rf target
 	mkdir -p target
-	export CC={{gpp_which}}
+	export CXX={{gpp_which}}
 	zig c++ {{ldflags_common}} -o {{target}} {{source}}
 	{{target}}
 
