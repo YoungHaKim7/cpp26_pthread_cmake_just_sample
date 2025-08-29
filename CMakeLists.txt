@@ -4,10 +4,13 @@ get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} LANGUAGES CXX)
 
-# Force GCC 15
+# Force GCC 15(LinuxOS)
 # set(CMAKE_CXX_COMPILER "/opt/gcc-15/bin/g++")
+# Force Clang 20(LinuxOS)
+set(CMAKE_CXX_COMPILER "/usr/bin/clang++-20")
+
 # Force Clang 20(macOS)
-set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
+# set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,7 +25,7 @@ add_compile_options(
     -Wall
     -Wextra
     -ggdb
-    # -Wdangling  # clang option
+    -Wdangling  # clang option
 )
 
 # Main executable with mandelbrot sources

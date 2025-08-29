@@ -58,7 +58,17 @@ br:
 cr:
 	rm -rf build
 	mkdir -p build
-	cmake -D CMAKE_CXX_COMPILER={{gpp_which}} -G Ninja .
+	cmake -D CMAKE_CXX_COMPILER={{clang_which}} -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+
+# cmake compile(macOS)
+[macos]
+cr:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_CXX_COMPILER={{clang_which}} -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
