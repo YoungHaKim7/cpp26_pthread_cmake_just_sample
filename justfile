@@ -1,8 +1,12 @@
 project_name := `basename "$(pwd)"`
 
-# which g++ (c23 + 26)
-gpp_which := "/opt/gcc-15/bin/g++"
+# which g++ (c23 + 26 / LinuxOS)
 clang_which := "/usr/bin/clang++-20"
+gpp_which := "/opt/gcc-15/bin/g++"
+
+# which g++(macOS)
+macos_clang_which := "/opt/homebrew/opt/llvm/bin/clang"
+macos_gpp_which := "/opt/homebrew/opt/gcc@15/bin/gcc-15"
 
 # clang-format-20
 clang_format := "clang-format-20"
@@ -49,11 +53,22 @@ br:
     mv gcm.cache *.o a.out {{target_dir}}/
     {{target_dir}}/a.out
 
-# cmake (build)
+# cmake compile(LinuxOS)
+[linux]
 cr:
 	rm -rf build
 	mkdir -p build
 	cmake -D CMAKE_CXX_COMPILER={{gpp_which}} -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+
+# cmake compile(macOS)
+[macos]
+cr:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_CXX_COMPILER={{macos_gpp_which}} -G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
@@ -71,6 +86,10 @@ b:
 	rm -rf target
 	mkdir -p target
 	{{gpp_which}} {{ldflags_debug}} -o {{target}} {{source}}
+
+# move target
+move:
+	mv *.bc *.i *.s *.o *.ll a.out build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log target
 
 # .clang-format init
 cl:

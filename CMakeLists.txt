@@ -5,7 +5,9 @@ string(REPLACE " " "_" ProjectId ${ProjectId})
 project(${ProjectId} LANGUAGES CXX)
 
 # Force GCC 15
-set(CMAKE_CXX_COMPILER "/opt/gcc-15/bin/g++")
+# set(CMAKE_CXX_COMPILER "/opt/gcc-15/bin/g++")
+# Force Clang 20(macOS)
+set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
 
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,6 +22,7 @@ add_compile_options(
     -Wall
     -Wextra
     -ggdb
+    # -Wdangling  # clang option
 )
 
 # Main executable with mandelbrot sources
