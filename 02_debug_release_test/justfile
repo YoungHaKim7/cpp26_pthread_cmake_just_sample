@@ -10,6 +10,7 @@ macos_gpp_which := "/opt/homebrew/opt/gcc@15/bin/gcc-15"
 
 # clang-format-20
 clang_format := "clang-format-20"
+macos_clang_format := "/opt/homebrew/opt/llvm/bin/clang-format"
 
 # Source and target directories
 src_dir := "./src"
@@ -22,7 +23,6 @@ module_source := src_dir+"/modules/*.ixx"
 module_target := target_dir+"/*.o"
 main_target := target_dir+"/main.o"
 
-
 # Common flags
 ldflags_common := "-std=c++26 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb"
 ldflags_optimization := "-std=c++26 -O2 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb"
@@ -34,8 +34,17 @@ ldflags_fsanitize_address := "-O1 -g -fsanitize=address -fno-omit-frame-pointer 
 ldflags_fsanitize_object := "-g -fsanitize=address"
 ldflags_fsanitize_valgrind := "-fsanitize=address -g3 -std=c++2b"
 
-# fmt
+# fmt(LinuxOS)
 fmt_flags := ". -regex '.*\\.\\(cpp\\|hpp\\|cc\\|cxx\\|c\\|h\\)' -exec "+clang_format+" -style=file -i {} \\;"
+
+# fmt .clang-format(macOS)
+macos_fmt_flags := ". -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.cc'  -o -iname '*.c'-o -iname '*.cxx' -o -iname '*.c' -o -iname '*.h' | "+macos_clang_format+" -style=file -i --files=/dev/stdin"
+
+# fast fmt(fd-find/LinuxOS)
+fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+clang_format+" -style=file -i {} \\;"
+ 
+# fast fmt(fd-find/macOS)
+macos_fm_flags := "-e c -e h -e cpp -e hpp -e cc -e cxx -x "+macos_clang_format+" -style=file -i {} \\;"
 
 r:
     rm -rf target 
@@ -67,7 +76,8 @@ br:
 cr:
 	rm -rf build
 	mkdir -p build
-	cmake -D CMAKE_CXX_COMPILER={{clang_which}} -G Ninja .
+	cmake -D CMAKE_CXX_COMPILER={{clang_which}} \
+	-G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
@@ -77,7 +87,8 @@ cr:
 cr:
 	rm -rf build
 	mkdir -p build
-	cmake -D CMAKE_CXX_COMPILER={{macos_gpp_which}} -G Ninja .
+	cmake -D CMAKE_CXX_COMPILER={{macos_gpp_which}} \
+	-G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
@@ -87,11 +98,40 @@ cr:
 cro:
 	rm -rf build
 	mkdir -p build
-	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_CXX_COMPILER={{gpp_which}} -D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" -G Ninja .
+	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	-D CMAKE_CXX_COMPILER={{gpp_which}} \
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
+	-G Ninja .
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/target/{{project_name}}
     
+# cmake compile(LinuxOS)
+[macos]
+cro:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo \
+	-D CMAKE_CXX_COMPILER={{macos_gpp_which}} \
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" \
+	-G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+
+# cmake compile(LinuxOS)
+[macos]
+cro3:
+	rm -rf build
+	mkdir -p build
+	cmake -D CMAKE_BUILD_TYPE=Release \
+	      -D CMAKE_CXX_COMPILER={{macos_gpp_which}} \
+	      -D CMAKE_CXX_FLAGS_RELEASE_INIT="-O3 -DNDEBUG" \
+	      -G Ninja .
+	ninja
+	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
+	./build/target/{{project_name}}
+	
 # zig c++ compile
 zr:
 	rm -rf target
@@ -118,8 +158,24 @@ cl:
 	{{clang_format}} -style=WebKit -dump-config > .clang-format
 
 # .clang-format fmt
+[linux]
 fmt:
 	find {{fmt_flags}}
+
+# .clang-format fmt(macos)
+[macos]
+fmt:
+	find {{macos_fmt_flags}}
+
+# (fast).clang-format fmt(cargo install fd-find)(LinuxOS)
+[linux]
+fm:
+	fd {{fm_flags}}
+
+# (fast).clang-format fmt(cargo install fd-find)(macOS)
+[macos]
+fm:
+	fd {{macos_fm_flags}}
 
 # clang++ LLVM emit-file
 ll:
