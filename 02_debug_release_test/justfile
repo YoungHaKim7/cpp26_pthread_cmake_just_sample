@@ -5,8 +5,8 @@ clang_which := "/usr/bin/clang++-20"
 gpp_which := "/opt/gcc-15/bin/g++"
 
 # which g++(macOS)
-macos_clang_which := "/opt/homebrew/opt/llvm/bin/clang"
-macos_gpp_which := "/opt/homebrew/opt/gcc@15/bin/gcc-15"
+macos_clang_which := "/opt/homebrew/opt/llvm/bin/clang++"
+macos_gpp_which := "/opt/homebrew/opt/gcc@15/bin/g++-15"
 
 # clang-format-20
 clang_format := "clang-format-20"
@@ -153,9 +153,16 @@ move:
 	mv CMakeCache.txt CMakeFiles cmake_install.cmake .ninja_deps .ninja_log build.ninja *.bc *.i *.s *.o *.ll a.out target
 
 # .clang-format init
+[linux]
 cl:
 	rm -rf .clang-format
 	{{clang_format}} -style=WebKit -dump-config > .clang-format
+
+# .clang-format init
+[macos]
+cl:
+	rm -rf .clang-format
+	{{macos_clang_format}} -style=WebKit -dump-config > .clang-format
 
 # .clang-format fmt
 [linux]
