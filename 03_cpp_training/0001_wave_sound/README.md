@@ -16,7 +16,13 @@
   - 솔 (G4, 392.00Hz)
 - 이 순서대로 재생되도록 하겠습니다.# 
 
+# 컴퓨터 소리를 인식하는 방법 알아보기
+- https://www.playsw.or.kr/artificial/textbook/detail/14
 
+# 컴퓨터는 어떻게 소리를 들을까?
+- 샘플링, 비트 레이트, Web Audio API로 보는 소리의 디지털 변환
+  - Jul 10, 2019
+- https://evan-moon.github.io/2019/07/10/javascript-audio-waveform/
 
 # 1. What is a WAV file?
 
