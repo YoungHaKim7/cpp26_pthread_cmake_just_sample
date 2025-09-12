@@ -1,5 +1,10 @@
 # 외국사람이 만든거
-- https://github.com/RobertDurfee/Wave
+- C++
+  - https://github.com/RobertDurfee/Wave
+
+- C
+  - wav2c makes arrays out of sounds - useful for Arduino SMAPLER v2 (and for GameBoy Advance) etc
+    -  https://github.com/olleolleolle/wav2c
 
 # 좋습니다 🎵 그러면 10초 동안 음이 바뀌는 WAV 파일을 만들어보겠습니다.
 
