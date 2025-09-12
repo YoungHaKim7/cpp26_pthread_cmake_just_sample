@@ -16,52 +16,68 @@
   - 솔 (G4, 392.00Hz)
 - 이 순서대로 재생되도록 하겠습니다.# 
 
-# Result
 
-- cmake 로 최적화
 
-```bash
-$ just cro
+# 1. What is a WAV file?
 
-rm -rf build
-mkdir -p build
-cmake -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_CXX_COMPILER=/opt/gcc-15/bin/g++ -D CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT="-O2 -g" -G Ninja .
--- The CXX compiler identification is GNU 15.2.0
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: /opt/gcc-15/bin/g++ - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- Configuring done (0.1s)
--- Generating done (0.0s)
--- Build files have been written to: /home/g/my_project/Rust_Lang/9999/2222/cpp26_pthread_cmake_just_sample/02_debug_release_test
-ninja
-[4/4] Linking CXX executable target/02_debug_release_test
-mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
-./build/target/02_debug_release_test
-Multiplication Time : 0.640681 seconds
+- WAV is a container format that usually stores uncompressed PCM audio.
+- It’s basically a binary file with:
+  - 1.  A header (metadata: format, sample rate, bit depth, etc.)
+  - 2. The raw audio samples (numbers representing air pressure changes).
+- So when your computer plays a WAV, it just reads those samples at the correct rate and sends them to the speakers.
+
+# 2. Structure of a WAV file
+
+- The typical layout looks like this:
+
+```
+RIFF Header (12 bytes)
+ ├─ "RIFF" (4 bytes)
+ ├─ File size - 8 (4 bytes)
+ └─ "WAVE" (4 bytes)
+
+fmt Chunk (24 bytes for PCM)
+ ├─ "fmt " (4 bytes)
+ ├─ Chunk size (16 for PCM)
+ ├─ Audio format (1 = PCM)
+ ├─ Number of channels (1=mono, 2=stereo)
+ ├─ Sample rate (e.g., 44100)
+ ├─ Byte rate (SampleRate × Channels × BitsPerSample/8)
+ ├─ Block align (Channels × BitsPerSample/8)
+ └─ Bits per sample (8, 16, 24…)
+
+data Chunk
+ ├─ "data" (4 bytes)
+ ├─ Subchunk size (numSamples × Channels × BitsPerSample/8)
+ └─ Raw PCM data (the samples)
 ```
 
-```bash
-$ just ro
+# 3. The audio samples (the “wave”)
 
-rm -rf target
-mkdir -p target
-/opt/gcc-15/bin/g++ -std=c++26 -O2 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb ./src/main.cpp
-mv a.out target
-target/./a.out
-Multiplication Time : 0.682643 seconds
-```
+- A sample is just a number representing the amplitude of the sound wave at a given instant.
+- For example, with 16-bit PCM, each sample is a signed integer between `-32768` and `+32767`.
+- If you plot those numbers over time and connect the dots, you get a waveform.
+- To make a pure sine wave at frequency `f`:
 
-- 최적화 안하면 12초짜리
 
-```bash
-$ just r
+$$ sample[n] = A \times{sin}\left(2\pi{f}\frac{n}{SampleRate}\right) $$
 
-rm -rf target
-mkdir -p target
-/opt/gcc-15/bin/g++ -std=c++26 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb ./src/main.cpp
-mv a.out target
-target/./a.out
-Multiplication Time : 12.8356 seconds
-```
+- Where:
+  - A = amplitude (volume)
+  - f = frequency (Hz, cycles per second)
+  - n = sample index
+  - SampleRate = how many samples per second (e.g., 44100)
+
+
+# 4. Example: 440 Hz A note (sine wave)
+- Sample rate: 44100 Hz
+- Duration: 1 second
+- Frequency: 440 Hz
+
+- So, we generate 44100 numbers with that sine formula, each scaled to fit in a 16-bit signed integer.
+Then we write them after the WAV header → and voilà, a playable `.wav` file!
+
+# 5. Why WAV is easy
+- It’s just RIFF metadata + raw numbers.
+- No compression, so it’s bigger than MP3/OGG, but much simpler to generate manually.
+- That’s why we can write a .wav with only ~50 lines of C++ or Rust.
