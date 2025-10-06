@@ -7,7 +7,7 @@ project(${ProjectId} LANGUAGES CXX)
 # Force GCC 15(LinuxOS)
 # set(CMAKE_CXX_COMPILER "/opt/gcc-15/bin/g++")
 # Force Clang 20(LinuxOS)
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++-20")
+# set(CMAKE_CXX_COMPILER "/usr/bin/clang++-21")
 
 # Force Clang 20(macOS)
 # set(CMAKE_CXX_COMPILER "/opt/homebrew/opt/llvm/bin/clang")
@@ -25,7 +25,7 @@ add_compile_options(
     -Wall
     -Wextra
     -ggdb
-    -Wdangling  # clang option
+    # -Wdangling  # clang option
 )
 
 # Main executable with mandelbrot sources
@@ -40,4 +40,3 @@ target_link_options(${ProjectId} PRIVATE -pthread -lm)
 set_target_properties(${ProjectId} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/target
 )
-
