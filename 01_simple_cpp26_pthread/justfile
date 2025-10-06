@@ -89,15 +89,15 @@ src_dir := "./src"
 target_dir := "./target"
 
 # Files
-source := src_dir+"/main.c"
+source := src_dir+"/main.cpp"
 target := target_dir+"/"+project_name
 
 # Optimize (O2(RelWithDebInfo), O3(Release))
-ldflags_optimize :=  "-std=c23 -Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
+ldflags_optimize :=  "-std=c++2c -Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # Common flags
-ldflags_common := "-std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
-ldflags_debug := "-std=c23 -pthread -lm -Wall -Wextra -ggdb"
+ldflags_common := "-std=c++2c -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
+ldflags_debug := "-std=c++2c -pthread -lm -Wall -Wextra -ggdb"
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
 ldflags_fsanitize_address := "-g -fsanitize=address -fno-omit-frame-pointer -c"
