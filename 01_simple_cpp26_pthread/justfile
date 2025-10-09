@@ -377,7 +377,7 @@ init:
 	echo '#include <print>' > src/main.cpp
 	echo '' >> src/main.cpp
 	echo 'int main(void) {' >> src/main.cpp
-	echo '        std::print("Hello world Cpp 26 lang ");' >> src/main.cpp
+	echo '    std::print("Hello world Cpp 26 lang ");' >> src/main.cpp
 	echo '    return 0;' >> src/main.cpp
 	echo '}' >> src/main.cpp
 
@@ -398,7 +398,7 @@ init2:
 	echo '#include <iostream>' > src/main.cpp
 	echo '' >> src/main.cpp
 	echo 'int main() {' >> src/main.cpp
-	echo '        std::cout << ("Hello world Cpp 20 lang ") << std::endl;' >> src/main.cpp
+	echo '    std::cout << ("Hello world Cpp 20 lang ") << std::endl;' >> src/main.cpp
 	echo '    return 0;' >> src/main.cpp
 	echo '}' >> src/main.cpp
 
