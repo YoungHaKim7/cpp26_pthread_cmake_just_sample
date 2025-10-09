@@ -1,6 +1,6 @@
 # link
 
-- [justfile(C++26) (meson x)]()
+- [justfile(C++26) (meson x)](#justfilec26-meson-x)
 
 # justfile(C++26, meson build)[|🔝|](#link)
 
