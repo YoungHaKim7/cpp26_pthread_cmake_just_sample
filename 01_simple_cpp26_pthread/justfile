@@ -6,8 +6,8 @@ project_name := `basename "$(pwd)"`
 full_project_name := `pwd`
 
 # clang & g++ basic & clang-format basic & cmake basic
-clang := `which clang` 
-clangpp := `which clang++` 
+clang := `which clang-21` 
+clangpp := `which clang++-21` 
 gpp := `which g++`
 clang_format_basic := `which clang-format`
 cmake := `which cmake`
@@ -96,7 +96,7 @@ target := target_dir+"/"+project_name
 ldflags_optimize :=  "-std=c++2c -Wall -O2 -pedantic -pthread -pedantic-errors -lm -Wextra -ggdb"
 
 # Common flags
-ldflags_common := "-std=c++2c -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
+ldflags_common := "-std=c++2c -pthread -lm -Wall -Wextra -ggdb -Werror"
 ldflags_debug := "-std=c++2c -pthread -lm -Wall -Wextra -ggdb"
 ldflags_emit_llvm := "-S -emit-llvm"
 ldflags_assembly := "-Wall -save-temps"
@@ -108,11 +108,15 @@ ldflags_fsanitize_valgrind := "-fsanitize=address -g3"
 ldflags_fsanitize_valgrind_O0 := "-O0 -g -std=c23 -pedantic -pthread -pedantic-errors -lm -Wall -Wextra -ggdb -Werror"
 ldflags_fsanitize_leak := "-fsanitize=leak -g"
 
+# highway
+include_highway := "-I /opt/homebrew/Cellar/highway/1.3.0/include"
+lib_highway := "-L /opt/homebrew/Cellar/highway/1.3.0/lib -lhwy"
+
 # (C)gpp compile(LinuxOS)
 r:
 	rm -rf {{target_dir}}
 	mkdir -p {{target_dir}}
-	{{gpp_which}} {{ldflags_common}} -o {{target_dir}}/{{project_name}} {{source}}
+	{{gpp_which}} {{ldflags_common}} {{include_highway}} {{lib_highway}} -o {{target_dir}}/{{project_name}} {{source}}
 	{{target}}
 
 # (C)clang compile(Optimization/LinuxOS/ macOS)
@@ -155,6 +159,14 @@ cro3:
 	ninja
 	mv build.ninja CMakeCache.txt CMakeFiles cmake_install.cmake target .ninja_deps .ninja_log build
 	./build/{{target}}
+
+# meson build
+mr:
+    rm -rf {{target_dir}}
+    export CXX={{gpp_which}}
+    CXX={{gpp_which}} meson setup {{target_dir}}
+    meson compile -C {{target_dir}}
+    ./{{target}}
 
 # zig C compile(LinuxOS)
 zr:
